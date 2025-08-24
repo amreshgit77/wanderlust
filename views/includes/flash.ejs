@@ -1,0 +1,15 @@
+<% if (success && success.length > 0) { %>
+  <div class="d-flex justify-content-center mt-4">
+    <div class="alert alert-success text-center w-50" role="alert">
+      <%= success[0] %>
+    </div>
+  </div>
+<% } %>
+
+<% if (error && error.length > 0) { %>
+  <div class="d-flex justify-content-center mt-4">
+    <div class="alert alert-danger text-center w-50" role="alert">
+      <%= error[0] %>
+    </div>
+  </div>
+<% } %>
