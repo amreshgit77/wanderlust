@@ -4,25 +4,29 @@ const Listing = require("../models/listing.js");
 
 const MongoURL = "mongodb://127.0.0.1:27017/wanderlust";
 
-const port = 8080;
+main().then(() => {
+  console.log("connection established");
+}).catch((err) => {
+  console.log(err);
+});
 
-main().then((res) => {
-    console.log("connection established");
-}).
-    catch((err) => {
-        console.log(err);
-    })
 async function main() {
-    await mongoose.connect(MongoURL);
-
+  await mongoose.connect(MongoURL);
 }
 
 async function saveData() {
-     await Listing.deleteMany({});
-    await  Listing.insertMany(Data.data);
+  await Listing.deleteMany({});
 
-    console.log("data is inserted");
+  const ownerId = new mongoose.Types.ObjectId("68a36962ea1e2288bd52e111"); 
 
+  Data.data = Data.data.map((obj) => ({
+    ...obj,
+    owner: ownerId,
+  }));
+
+  await Listing.insertMany(Data.data);
+
+  console.log("data is inserted");
 }
 
 saveData();

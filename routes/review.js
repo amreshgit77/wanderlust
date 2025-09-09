@@ -7,6 +7,7 @@ const Review = require("../models/review.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const ExpressError = require("../utils/ExpressError.js");
 const { reviewSchema } = require("../schema.js");
+const { isLoggedIn, isReviewAuthor } = require("../middleware.js");
 
 // Joi validation middleware
 const validateReview = (req, res, next) => {
@@ -21,19 +22,19 @@ const validateReview = (req, res, next) => {
     next();
 };
 
-router.post("/", validateReview, wrapAsync(async (req, res) => {
+router.post("/", isLoggedIn, validateReview, wrapAsync(async (req, res) => {
     let listing = await Listing.findById(req.params.id);
     let newreview = new Review(req.body.review);
-
+    newreview.author = req.user._id;
     listing.reviews.push(newreview);
     await newreview.save();
     await listing.save();
-req.flash("success", "Review added!");
+    req.flash("success", "Review added!");
 
     res.redirect(`/listings/${listing._id}`);
 }));
 
-router.delete("/:reviewId", wrapAsync(async (req, res) => {
+router.delete("/:reviewId",isLoggedIn,isReviewAuthor, wrapAsync(async (req, res) => {
     const { id, reviewId } = req.params;
     await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);
