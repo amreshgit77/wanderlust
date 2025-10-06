@@ -1,47 +1,80 @@
 const Listing = require("../models/listing");
+const { uploadToCloudinary } = require("../cloudConfig"); // Uses buffer upload
 
 module.exports.index = async (req, res) => {
-    const allListing = await Listing.find({});
-    res.render("listings/index", { allListing });
-}
+  const allListing = await Listing.find({});
+  res.render("listings/index", { allListing });
+};
 
 module.exports.renderNewForm = (req, res) => {
-    res.render("listings/new.ejs");
+  res.render("listings/new.ejs");
 };
 
 module.exports.showListing = async (req, res) => {
-    const { id } = req.params;
-    const listing = await Listing.findById(id).
-    populate({ path: "reviews", populate: { path: "author" }, }).
-    populate("owner");
-    if (!listing) throw new ExpressError(404, "Listing not found");
-    res.render("listings/show.ejs", { listing });
-}
+  const { id } = req.params;
+  const listing = await Listing.findById(id)
+    .populate({ path: "reviews", populate: { path: "author" } })
+    .populate("owner");
 
+  if (!listing) {
+    req.flash("error", "Listing not found");
+    return res.redirect("/listings");
+  }
+
+  res.render("listings/show.ejs", { listing });
+};
+
+//  Corrected version for Cloudinary buffer upload
 module.exports.createListing = async (req, res) => {
+  try {
+    if (!req.file) {
+      req.flash("error", "Please upload an image");
+      return res.redirect("/listings/new");
+    }
+
+    //  Upload image to Cloudinary using buffer
+    console.log("Uploading file to Cloudinary...");
+    const result = await uploadToCloudinary(req.file.buffer); //  buffer 
+
+    //  Create listing
     const newListing = new Listing(req.body.listing);
     newListing.owner = req.user._id;
+    newListing.image = {
+      url: result.secure_url, //  actual Cloudinary image URL
+      filename: result.public_id, //  unique Cloudinary file ID
+    };
+
     await newListing.save();
-    res.redirect("/listings");
-}
+
+    req.flash("success", "Successfully created a new listing!");
+    res.redirect(`/listings/${newListing._id}`);
+  } catch (err) {
+    console.error("Error creating listing:", err);
+    req.flash("error", "Image upload failed. Please try again.");
+    res.redirect("/listings/new");
+  }
+};
 
 module.exports.renderEditForm = async (req, res) => {
-    const { id } = req.params;
-    const listing = await Listing.findById(id);
-    req.flash("success", "Listing updated successfully!");
-    if (!listing) throw new ExpressError(404, "Listing not found");
-    res.render("listings/edit.ejs", { listing });
-}
+  const { id } = req.params;
+  const listing = await Listing.findById(id);
+  if (!listing) {
+    req.flash("error", "Listing not found");
+    return res.redirect("/listings");
+  }
+  res.render("listings/edit.ejs", { listing });
+};
 
 module.exports.updateListing = async (req, res) => {
-    const { id } = req.params;
-    await Listing.findByIdAndUpdate(id, { ...req.body.listing });
-    res.redirect("/listings");
-}
+  const { id } = req.params;
+  await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+  req.flash("success", "Listing updated successfully!");
+  res.redirect(`/listings/${id}`);
+};
 
 module.exports.destroyListing = async (req, res) => {
-    const { id } = req.params;
-    await Listing.findByIdAndDelete(id);
-    req.flash("success", "Listing deleted successfully!");
-    res.redirect("/listings");
-}
+  const { id } = req.params;
+  await Listing.findByIdAndDelete(id);
+  req.flash("success", "Listing deleted successfully!");
+  res.redirect("/listings");
+};

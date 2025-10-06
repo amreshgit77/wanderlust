@@ -10,12 +10,8 @@ const listingSchema = new Schema({
   },
   description: String,
   image: {
-    url: {
-      type: String,
-      default: "https://unsplash.com/photos/a-cowboy-sits-on-his-horse-in-the-desert-9nqNQLfn5B4",
-      set: (v) => v === "" ? "https://unsplash.com/photos/a-cowboy-sits-on-his-horse-in-the-desert-9nqNQLfn5B4" : v,
-    },
-    filename: String,
+    url: String,
+    filename: String
   },
   price: Number,
   location: String,
@@ -36,10 +32,10 @@ const listingSchema = new Schema({
 // models/Listing.js
 
 
-listingSchema.post('findOneAndDelete', async (listing) =>{
-    if (listing) {
-        await Review.deleteMany({ _id: { $in: listing.reviews } });
-    }
+listingSchema.post('findOneAndDelete', async (listing) => {
+  if (listing) {
+    await Review.deleteMany({ _id: { $in: listing.reviews } });
+  }
 });
 
 
