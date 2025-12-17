@@ -140,7 +140,15 @@
                     </div> <!-- /.row -->
                 </div> <!-- /.card -->
             </div> <!-- /.col-10 -->
-        </div> <!-- /.row -->
+
+        </div>
+        <div class="col-10 mx-auto mb-4">
+            <h3 class="mt-4">Where you'll be</h3>
+            <div id="map"></div>
+        </div>
+
+    </div> <!-- /.row -->
+
     </div> <!-- /.container -->
 
     <!-- Confirm Delete Script -->
@@ -150,19 +158,6 @@
         }
     </script>
 
-    <!-- Bootstrap 5 Form Validation Script -->
-    <!-- <script>
-    (function () {
-        'use strict'
-        const forms = document.querySelectorAll('.needs-validation')
-        Array.from(forms).forEach(function (form) {
-            form.addEventListener('submit', function (event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                }
-                form.classList.add('was-validated')
-            }, false)
-        })
-    })()
-</script> -->
+    <script src="/js/map.js"></script>
+
+   

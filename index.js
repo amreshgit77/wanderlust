@@ -73,7 +73,7 @@ app.use((req, res, next) => {
 
 //  Routes
 app.get("/", (req, res) => {
-    res.send("Server is working ✅");
+    res.send("Server is working ");
 });
 app.use("/listings", listingRoutes);
 app.use("/listings/:id/reviews", reviewRoutes);

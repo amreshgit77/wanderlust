@@ -1,6 +1,8 @@
 const Listing = require("../models/listing");
 const { uploadToCloudinary } = require("../cloudConfig"); // Uses buffer upload
-
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocodingClient  = mbxGeocoding({ accessToken: mapBoxToken });
 module.exports.index = async (req, res) => {
   const allListing = await Listing.find({});
   res.render("listings/index", { allListing });
@@ -21,11 +23,13 @@ module.exports.showListing = async (req, res) => {
     return res.redirect("/listings");
   }
 
-  res.render("listings/show.ejs", { listing });
+  res.render("listings/show.ejs", { listing,mapToken: process.env.MAPBOX_TOKEN, });
 };
 
 //  Corrected version for Cloudinary buffer upload
 module.exports.createListing = async (req, res) => {
+  
+
   try {
     if (!req.file) {
       req.flash("error", "Please upload an image");
@@ -62,12 +66,32 @@ module.exports.renderEditForm = async (req, res) => {
     req.flash("error", "Listing not found");
     return res.redirect("/listings");
   }
-  res.render("listings/edit.ejs", { listing });
+  let originalImageUrl = listing.image.url;
+  originalImageUrl.replace("/upoads/", "/uploads/w_200/"); // Example transformation to resize image
+  
+    res.render("listings/edit.ejs", { originalImageUrl });
 };
 
 module.exports.updateListing = async (req, res) => {
   const { id } = req.params;
-  await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+  const listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+
+  if (!listing) {
+    req.flash("error", "Listing not found");
+    return res.redirect("/listings");
+  }
+
+
+  if (req.file) {
+    const result = await uploadToCloudinary(req.file.buffer);
+
+    listing.image = {
+      url: result.secure_url,
+      filename: result.public_id,
+    };
+
+    await listing.save();
+  }
   req.flash("success", "Listing updated successfully!");
   res.redirect(`/listings/${id}`);
 };
