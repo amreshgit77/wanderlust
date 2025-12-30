@@ -22,7 +22,9 @@ const userRoutes = require("./routes/user.js");
 
 const app = express();
 const port = 8080;
-const MongoURL = "mongodb://127.0.0.1:27017/wanderlust";
+//const MongoURL = "mongodb://127.0.0.1:27017/wanderlust";
+
+const dbUrl = process.env.ATLASDB_URI ;
 
 //  Session config
 const sessionOptions = {
@@ -52,7 +54,7 @@ app.use(flash());
 //  MongoDB connection
 main().then(() => console.log("✅ MongoDB connected")).catch(console.log);
 async function main() {
-    await mongoose.connect(MongoURL);
+    await mongoose.connect(dbUrl);
 }
 
 //  Passport setup
