@@ -1,16 +1,31 @@
-body {
-    font-family: "Roboto", sans-serif !important;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-
+/* ===== Airbnb-style base ===== */
+html {
+    scroll-behavior: smooth;
 }
 
-.container {
+body {
+    font-family: "Roboto", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #f7f7f7;
+    color: #222;
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+}
+
+.page-wrapper {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 1.5rem 0;
+    min-height: calc(100vh - 10rem);
+}
+
+/* Layout */
+.container,
+.container-fluid {
     flex: 1;
 }
 
-/* navbar */
+/* ===== Navbar ===== */
 .navbar {
     height: 5rem;
     background-color: rgb(250, 249, 248);
@@ -25,7 +40,24 @@ body {
     color: black !important;
 }
 
-/* footer */
+/* ===== Footer ===== */
+.f-info {
+    text-align: center;
+    height: 8rem;
+    background-color: #f7f7f7;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.f-info-links,
+.f-info-socials,
+.f-info-brand {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .f-info-links a {
     text-decoration: none;
@@ -34,16 +66,6 @@ body {
 
 .f-info-links a:hover {
     text-decoration: underline;
-
-}
-
-.f-info-socials,
-.f-info-links,
-.f-info-brand {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .f-info-socials i {
@@ -51,37 +73,36 @@ body {
     font-size: 1.2rem;
 }
 
-
-
-.f-info {
-    text-align: center;
-    height: 8rem;
-    background-color: beige;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    /* align-items: space-evenly; */
-
-}
-
-/* card */
+/* ===== Cards ===== */
 .card {
     border: none !important;
     margin-bottom: 2rem;
+    border-radius: 14px;
+    background-color: #fff;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
 }
 
 .card-img-top {
-    border-radius: 1rem !important;
+    border-radius: 14px !important;
     width: 100% !important;
     object-fit: cover !important;
+    transition: transform 0.4s ease;
 }
 
-card-body {
+.card:hover .card-img-top {
+    transform: scale(1.03);
+}
+
+.card-body {
     padding: 0 !important;
 }
 
-
-card-text p {
+.card-text {
     font-weight: 400;
 }
 
@@ -89,30 +110,14 @@ card-text p {
     text-decoration: none;
 }
 
-/* card effect */
-
-.card-img-overlay {
-    opacity: 0;
-}
-
-.card-img-overlay:hover {
-    opacity: 0.2;
-    background-color: white;
-}
-
-/* new page */
-.add-btn {
-    background-color: rgb(207, 5, 5) !important;
-    border: none !important;
-}
-
-/* Edit page */
+/* ===== Buttons ===== */
+.add-btn,
 .edit-btn {
     background-color: rgb(207, 5, 5) !important;
     border: none !important;
 }
 
-/* show page */
+/* ===== Show page ===== */
 .listing-image {
     width: 100% !important;
     height: 35vh !important;
@@ -120,11 +125,11 @@ card-text p {
     border-radius: 0.5rem !important;
 }
 
-/* map container */
+/* ===== Map ===== */
 #map {
-        width: 100%;
-        height: 40vh;
-        border-radius: 10px;
-        margin-top: 10px;
-        border: 2px solid #ddd;
-    }
+    width: 100%;
+    height: 40vh;
+    border-radius: 10px;
+    margin-top: 10px;
+    border: 2px solid #ddd;
+}

@@ -1,7 +1,7 @@
 const Listing = require("../models/listing");
 const { uploadToCloudinary } = require("../cloudConfig"); // Uses buffer upload
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
-const mapBoxToken = process.env.MAPBOX_TOKEN;
+const mapBoxToken = "pk.eyJ1IjoiYW1ydTc3IiwiYSI6ImNtajBjMjZoczA2cnozZnNibWM4OXY3ZDcifQ.73Nd8Q9NIsWZpoRKMmfgqw";
 const geocodingClient  = mbxGeocoding({ accessToken: mapBoxToken });
 module.exports.index = async (req, res) => {
   const allListing = await Listing.find({});
@@ -28,7 +28,14 @@ module.exports.showListing = async (req, res) => {
 
 //  Corrected version for Cloudinary buffer upload
 module.exports.createListing = async (req, res) => {
-  
+  let response = await geocodingClient
+    .forwardGeocode({
+      query: req.body.listing.location,
+      limit: 1,
+    })
+    .send();
+
+    
 
   try {
     if (!req.file) {
@@ -47,8 +54,11 @@ module.exports.createListing = async (req, res) => {
       url: result.secure_url, //  actual Cloudinary image URL
       filename: result.public_id, //  unique Cloudinary file ID
     };
+    newListing.geometry = response.body.features[0].geometry;
 
-    await newListing.save();
+    let ans = await newListing.save();
+
+    console.log(ans);
 
     req.flash("success", "Successfully created a new listing!");
     res.redirect(`/listings/${newListing._id}`);

@@ -1,25 +1,79 @@
-<nav class="navbar navbar-expand-md bg-body-light  border-bottom sticky-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/listings"><i class="fa-solid fa-compass"></i>
+<style>
+  .btn-search {
+    background-color: #fe424d;
+    color: white;
+    border-radius: 25px;
+    padding: 0 1rem 0 1rem;
+  }
+
+  .btn-search:hover {
+    background-color: #e63946;
+    color: white;
+  }
+
+  .btn-search i {
+    display: inline;
+    margin-right: 0.5rem;
+  }
+  .search-inp {
+    border-radius: 25px;
+    padding: 0.5rem 3rem 0.5rem 3rem;
+    border: 1px solid #ced4da;
+    padding-left: 1rem;
+  }
+</style>
+
+<nav class="navbar navbar-expand-md bg-white border-bottom sticky-top shadow-sm">
+  <div class="container-fluid px-4">
+
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center fw-semibold" href="/listings">
+      <i class="fa-solid fa-compass fs-4 me-2 text-danger"></i>
+      <span class="d-none d-md-inline">Wanderlust</span>
     </a>
+
+    <!-- Toggle -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
       <span class="navbar-toggler-icon"></span>
     </button>
+
+    <!-- Menu -->
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link " href="/">Home</a>
-        <a class="nav-link" href="/listings">All Listing</a>
-        <a class="nav-link" href="/listings/new">New Listing</a>
+
+      <!-- Left Links -->
+      <div class="navbar-nav gap-md-3">
+        <a class="nav-link fw-medium" href="/listings">
+          <i class="fa-solid fa-list me-1"></i> All Listings
+        </a>
+        <a class="nav-link fw-medium" href="/listings/new">
+          <i class="fa-solid fa-plus me-1"></i> New Listing
+        </a>
       </div>
       <div class="navbar-nav ms-auto">
-       <% if(!currUser) { %>
-        <a class="nav-link " href="/signup">sign Up</a>
-        <a class="nav-link" href="/login">Log In </a>
-        <% } %>
-        <% if(currUser) { %>
-        <a class="nav-link" href="/logout">Log Out</a>
-        <% } %>
+        <form class="d-flex" role="search">
+          <input class="form-control me-2 search-inp" type="search" placeholder="Search Destinations"  />
+          <button class="btn btn-search" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
+        </form>
       </div>
+
+      <!-- Right Links -->
+      <div class="navbar-nav ms-auto align-items-md-center gap-md-3">
+        <% if(!currUser) { %>
+          <a class="nav-link fw-medium" href="/signup">
+            <i class="fa-regular fa-user me-1"></i> Sign Up
+          </a>
+          <a class="btn btn-outline-dark rounded-pill px-3" href="/login">
+            Log In
+          </a>
+          <% } %>
+
+            <% if(currUser) { %>
+              <a class="btn btn-dark rounded-pill px-3" href="/logout">
+                Log Out
+              </a>
+              <% } %>
+      </div>
+
     </div>
   </div>
 </nav>
